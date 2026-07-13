@@ -1,0 +1,378 @@
+{
+  "info": {
+    "name": "User Management API",
+    "description": "A RESTful API for managing users. Built with Node.js, Express, MongoDB, and Mongoose.\n\n## Endpoints\n\n- GET /api/users - Get all users\n- GET /api/users/:id - Get user by ID\n- POST /api/users - Create a new user\n- PUT /api/users/:id - Update an existing user\n- DELETE /api/users/:id - Delete a user",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "user-management-api"
+  },
+  "item": [
+    {
+      "name": "Get All Users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has status success\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql(\"success\");",
+              "});",
+              "",
+              "pm.test(\"Response returns an array of users\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.user).to.be.an(\"array\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/users",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users"]
+        },
+        "description": "Retrieves all users from the database."
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"success\",\n  \"message\": \"Users retrieved successfully\",\n  \"user\": [\n    {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"name\": \"Alice Johnson\",\n      \"email\": \"alice@example.com\",\n      \"age\": 28,\n      \"phone\": \"010-1111-0001\",\n      \"createdAt\": \"2024-01-10T00:00:00.000Z\",\n      \"updatedAt\": \"2024-01-10T00:00:00.000Z\"\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get User by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has status success\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql(\"success\");",
+              "});",
+              "",
+              "pm.test(\"Response contains user details\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.user).to.be.an(\"object\");",
+              "    pm.expect(jsonData.user).to.have.property(\"_id\");",
+              "    pm.expect(jsonData.user).to.have.property(\"name\");",
+              "    pm.expect(jsonData.user).to.have.property(\"email\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/users/{{user_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "{{user_id}}"],
+          "variable": [
+            {
+              "key": "user_id",
+              "value": "664f1a2b3c4d5e6f7a8b9c0d",
+              "description": "MongoDB ObjectId of the user"
+            }
+          ]
+        },
+        "description": "Retrieves a single user by their MongoDB ObjectId."
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"success\",\n  \"user\": {\n    \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"name\": \"Alice Johnson\",\n    \"email\": \"alice@example.com\",\n    \"age\": 28,\n    \"phone\": \"010-1111-0001\",\n    \"createdAt\": \"2024-01-10T00:00:00.000Z\",\n    \"updatedAt\": \"2024-01-10T00:00:00.000Z\"\n  }\n}"
+        },
+        {
+          "name": "Not Found",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"error\",\n  \"message\": \"User not found\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Create User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Response has status success\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql(\"success\");",
+              "});",
+              "",
+              "pm.test(\"Response contains created user data\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.data).to.be.an(\"object\");",
+              "    pm.expect(jsonData.data).to.have.property(\"_id\");",
+              "    pm.expect(jsonData.data.name).to.eql(pm.request.body.raw.name);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": "John Doe",\n  "email": "john.doe@example.com",\n  "age": 30,\n  "phone": "010-1234-5678"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users"]
+        },
+        "description": "Creates a new user. The `name` and `email` fields are required."
+      },
+      "response": [
+        {
+          "name": "Created",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"success\",\n  \"message\": \"User created successfully\",\n  \"data\": {\n    \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"age\": 30,\n    \"phone\": \"010-1234-5678\",\n    \"createdAt\": \"2024-01-10T00:00:00.000Z\",\n    \"updatedAt\": \"2024-01-10T00:00:00.000Z\"\n  }\n}"
+        },
+        {
+          "name": "Validation Error",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"errors\": [\n    {\n      \"type\": \"field\",\n      \"msg\": \"Invalid value\",\n      \"path\": \"name\",\n      \"location\": \"body\"\n    },\n    {\n      \"type\": \"field\",\n      \"msg\": \"Invalid value\",\n      \"path\": \"email\",\n      \"location\": \"body\"\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Update User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has status success\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql(\"success\");",
+              "});",
+              "",
+              "pm.test(\"Response has update message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.eql(\"User updated successfully\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": "John Doe Updated",\n  "email": "john.updated@example.com",\n  "age\": 31,\n  "phone\": "010-9999-8888"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users/{{user_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "{{user_id}}"],
+          "variable": [
+            {
+              "key": "user_id",
+              "value": "664f1a2b3c4d5e6f7a8b9c0d",
+              "description": "MongoDB ObjectId of the user to update"
+            }
+          ]
+        },
+        "description": "Updates an existing user. Requires `name` and `email`. Other fields are optional."
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"success\",\n  \"message\": \"User updated successfully\"\n}"
+        },
+        {
+          "name": "Not Found",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"error\",\n  \"message\": \"User not found\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Delete User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has status success\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql(\"success\");",
+              "});",
+              "",
+              "pm.test(\"Response has delete message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.eql(\"User deleted successfully\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/users/{{user_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "{{user_id}}"],
+          "variable": [
+            {
+              "key": "user_id",
+              "value": "664f1a2b3c4d5e6f7a8b9c0d",
+              "description": "MongoDB ObjectId of the user to delete"
+            }
+          ]
+        },
+        "description": "Deletes a user by their MongoDB ObjectId."
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"success\",\n  \"message\": \"User deleted successfully\"\n}"
+        },
+        {
+          "name": "Not Found",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"error\",\n  \"message\": \"User not found\"\n}"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string",
+      "description": "Base URL for the API server"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string",
+      "description": "MongoDB ObjectId of an existing user"
+    }
+  ]
+}
